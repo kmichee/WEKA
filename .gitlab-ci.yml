@@ -1,0 +1,34 @@
+image: maven:3-jdk-8
+
+variables:
+  projet: "weka"
+
+before_script:
+  - "cd $projet"
+
+stages: 
+  - Clean
+  - Test
+  - Packet
+
+Clean: 
+  stage: Clean
+  script:
+    - mvn $MAVEN_CLI_OPTS clean compile
+  
+Test:
+  stage: Test
+  dependencies:
+    - Clean
+  script:
+    - mvn $MAVEN_CLI_OPTS test
+  artifacts:
+    when: on_success
+
+Packet:
+  stage: Packet
+  dependencies:
+    - Test
+  script:
+    - mvn $MAVEN_CLI_OPTS package
+
